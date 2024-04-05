@@ -1,0 +1,71 @@
+MwerAlign Library, version 1.0, May 29, 2006.
+Copyright 2006 RWTH Aachen University Lehrstuhl fuer Informatik 6.
+
+-------------------------------------------------------------
+This software package is to be used for segmentation of unsegmented or improperly
+segmented translation hypotheses according to the segments defined in the
+(multiple) reference translations. 
+
+PLEASE READ ALL OF THE INFORMATION BELOW BEFORE USING THIS SOFTWARE.
+
+------------------------------------------------------------
+To test the library, run
+
+./compile.sh
+./mwerAlignTest
+
+(look inside the mwerAlign-test.cc to get explanation about the test).
+
+The library was pre-compiled under the "intel" architecture.
+Thus, the library can be used only on Unix/Linux i686 machines.
+The program requires a recent version of the gcc compiler.
+
+------------------------------------------------------------
+To use the function mwerAlign(string <ref>, string <hyp>, string <result>)
+of the MwerSegmenter class, you have to provide:
+
+1. Reference string <ref> with translated segments separated by the newline symbol "\n",
+   multiple references for each segment separated with the # symbol.
+   Note that each segment in a document must have exactly the same number N, 
+   N >= 1 non-empty reference translations (identical multiple references are allowed). 
+   It is a good idea to tokenize the reference translations (i.e. separate punctuation from words) 
+   in order to ensure good performance of the re-segmentation algorithm.
+
+2. Hypothesis string <hyp> in plain text (newlines within the string are irrelevant).
+   It is a good idea to tokenize the translations (i.e. separate punctuation from words) 
+   in order to ensure good performance of the re-segmentation algorithm.
+
+The function returns the string <result> which contains the content of <hyp> 
+with the newline symbols "\n" inserted after the last word of each
+automatically determined segment.
+
+The segments are determined automatically based on the Levenshtein distance 
+to the reference translations. The number of segments in the <result> is equal to the 
+number of reference segments.
+
+---------------------------------------------------------------
+
+Additional options, set with the constructor of the MwerSegmenter class:
+
+<maxER>       If the word error rate for one of the determined segments is higher than the <value>,
+              then a warning will be printed to STDERR with the segment number and the error rate.
+              This is useful to track segments where there are so many translation errors that the
+              segmentation may be incorrect. The segmentation of such segments can then be corrected
+              manually. If the value is -1, no warnings will be produced.
+<human>       With this boolean variable set to "true", heuristic costs will be used for insertions,deletions,substitutions
+              which involve ASCII punctuation marks to make sure that the words in the beginning and/or
+              in the end of each segment really belong to the right segment. However, it can not be guaranteed
+              that a correct alignment (from the human point of view) will be produced in all cases.
+              The heuristic can be described as follows. Whereas the standard cost for an edit is 1,
+              the insertion/deletion error of a punctuation mark, as well as a substitution of a punctuation mark
+              with a word which is not a punctuation mark costs 2. Also, if the previously aligned word
+              was a punctuation mark in the reference, or the next word of the reference is the last
+              word in the segment, the insertion costs for all words are 2.
+              Note that using this heuristic makes the program run somewhat slower.
+
+Additionally, the program outputs to STDERR a score called AS-WER (automatic segmentation error rate)
+which is similar to multiple-reference word error rate. Please note that with the <human> option set to "true",
+this error rate is not exactly correct (the correct error rate is usually somewhat lower).
+
+------------------------------------------------------------
+For more information, contact Evgeny Matusov, RWTH Aachen, matusov@informatik.rwth-aachen.de

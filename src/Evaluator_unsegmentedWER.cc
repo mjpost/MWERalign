@@ -13,75 +13,6 @@ double Evaluator_unsegmentedWER::_evaluate2(const HypContainer& hyps, std::ostre
   std::vector<std::vector<unsigned int> > A;
   std::vector<unsigned int> B;
   std::vector<std::string> stringB;
-  cerr << "Taille " <<(int)hyps.size() <<endl;
-  cerr << "Taille " <<(int)mref.size() <<endl;
-
-  A.resize(mref[0].size()); /** NOTE: different segments can have different number of references!
-                             -> some sents must have "double" same references, before this can be used! **/
-  for(size_t i=0;i<mref.size();++i) {
-    unsigned int maxRefLength =0;
-    for(HypContainer::const_iterator r=mref[i].begin();r!=mref[i].end();++r) 
-      if(r->size() > maxRefLength) maxRefLength=r->size();
-    for(size_t r=0;r<mref[i].size();++r)
-    {
-      for(size_t k=0;k<maxRefLength;++k)
-      {
-        if(k<mref[i][r].size())
-          (A[r]).push_back(getVocIndex(mref[i][r][k]));
-        else (A[r]).push_back(epsilon);
-      }
-      (A[r]).push_back(segmentationWord);
-    }
-  } 
-  for(size_t i=0;i<HS;++i) {
-    for(size_t j=0;j<hyps[i].size();++j) 
-    {
-      B.push_back(getVocIndex(hyps[i][j])); 
-      stringB.push_back(hyps[i][j]);
-    }
-  }
-  rv = computeSpecialWER(A, B, mref.size()); // compute the edit distance
-  size_t beg = 1;
-  size_t end = 0;
-  // Ofile segOut("__segments");
-  for(size_t s=2;s<boundary.size();++s)
-  {
-    end=boundary[s];
-    size_t sentLength=0;
-    for(size_t j=beg; j<=std::min(end, stringB.size()); ++j)
-    {
-      out << stringB[j-1] << " ";
-      ++sentLength;
-    }
-    out << "\n";
-  double thisSentCosts = double(sentCosts[s-1] - sentCosts[s-2])/double(sentLength);
-  if((maxER_>=0)&&(thisSentCosts > maxER_)) std::cerr << "WARNING: check the alignment for segment " << s-1
-                                            << " manually (WER: " << thisSentCosts << " )!\n";
-    beg = end + 1;
-  }
-  // for the last segment:
-  size_t sentLength=0;
-  for(size_t j=beg; j<=stringB.size(); ++j)
-  {
-    out << stringB[j-1] << " ";
-    ++sentLength;
-  }
-  out << "\n";
-  double thisSentCosts = double(sentCosts[sentCosts.size()-1] - sentCosts[sentCosts.size()-2])/double(sentLength);
-  if((maxER_>=0)&&(thisSentCosts > maxER_)) std::cerr << "WARNING: check the alignment for segment " << sentCosts.size()-1
-                                             << " manually (WER: " << thisSentCosts << " )!\n";
-  return rv/refLength_;
-}
-
-double Evaluator_unsegmentedWER::_evaluate2(const HypContainer& hyps, const HypContainer& hypsBi, std::ostream& out) const {
-  size_t HS=hyps.size();
-  unsigned int epsilon = 0;
-  double rv=0;
-  std::vector<std::vector<unsigned int> > A;
-  std::vector<unsigned int> B;
-  std::vector<std::string> stringB;
-  cerr << "Taille " <<(int)hyps.size() <<endl;
-  cerr << "Taille " <<(int)mref.size() <<endl;
 
   A.resize(mref[0].size()); /** NOTE: different segments can have different number of references!
                              -> some sents must have "double" same references, before this can be used! **/
@@ -279,21 +210,16 @@ double Evaluator_unsegmentedWER::computeSpecialWER(const std::vector<std::vector
   }
   // Backtracing from here:
   s = S; // S - total number of segments
-  k = J;
+  k = J; 
   unsigned int refNo=0;
   do
   {
-  cerr << "Test : "<< S << "\t" << s << "\t" << (int)BP[k].size() << "\t" << (int)BC[k].size() << "\t" << (int)BR[k].size() << "\t" << (int)boundary.size() <<endl;
-      if (BP[k].size() > 0)
-      {
       boundary[s] = BP[k][s];
       sentCosts[s] = BC[k][s];
       refNo = BR[k][s];
       refLength_ += mref[s-1][refNo].size(); // add up the length of the best aligned references
       k = BP[k][s];
-      }
       s = s-1;
-      
   }
   while(s > 0);
   return m[0][I].cost; // total costs - the same for all references (since a merge is always the last step)

@@ -33,7 +33,7 @@ bool Evaluator::loadrefsFromStream(std::istream& in)
       mreftype refs;
       hyptype h;
 
-      hyptype h_m = tokenize ? TextNS::makeSent(usecase ? line : TextNS::makelowerstring(line)) 
+      hyptype h_m = tokenize ? TextNS::makeTokenSent(usecase ? line : TextNS::makelowerstring(line)) 
 	 : TextNS::makeSent(usecase ? line : TextNS::makelowerstring(line));
      
 
@@ -83,7 +83,7 @@ bool Evaluator::loadrefs(const MRefContainer & references)
 	    std::copy(j->begin(), j->end(),
 		      std::ostream_iterator<std::string>(os, " "));
 
-	    hc.push_back(TextNS::makeSent(usecase ? os.str() : TextNS::makelowerstring(os.str())));
+	    hc.push_back(TextNS::makeTokenSent(usecase ? os.str() : TextNS::makelowerstring(os.str())));
 	 }	 
 	 mref.push_back(hc);
       }
