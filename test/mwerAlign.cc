@@ -42,11 +42,11 @@ struct option_plus {
 
 
 static vector<option_plus> options_plus = {
-    {"help",          no_argument,       0, 'h', "print this help message"},
-    {"hyp",        required_argument, 0, 's', "hypopthesis side of the text to align"},
-    {"hyp_bi",        required_argument, 0, 'b', "bitext of the hypopthesis side of the text to align [optional]"},
-    {"ref",        required_argument, 0, 't', "reference side of the text to align"},
-    {"out",        required_argument, 0, 'o', "output file"},
+    {"help",    no_argument,       0, 'h', "print this help message"},
+    {"hyp",     required_argument, 0, 's', "hypothesis side of the text to align"},
+    {"hyp_bi",  required_argument, 0, 'b', "bitext of the hypothesis side of the text to align [optional]"},
+    {"ref",     required_argument, 0, 't', "reference side of the text to align"},
+    {"out",     required_argument, 0, 'o', "output file"},
     {0, 0, 0, 0, 0}
 };
 
@@ -61,8 +61,7 @@ void print_usage() {
     std::cout << std::endl;
 }
 
-
-int main(int argc,char**argv) {
+int main(int argc, char* argv[]) {
     string hyp_file;
     string hyp_bi_file;
     string ref_file;
