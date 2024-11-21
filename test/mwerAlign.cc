@@ -140,7 +140,7 @@ int main(int argc,char**argv) {
     bool human=false;
     MwerSegmenter ms(maxER, human);
     string result;
-    ms.mwerAlign(ref_data, hyp_data, hyp_bi_data, result);
+    ms.mwerAlign(ref_data, hyp_data, result);
     ofstream outFile(out_file);
     if ( outFile ) 
     {    
