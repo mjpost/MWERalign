@@ -40,6 +40,14 @@ namespace TextNS {
 
   typedef VectorText SimpleText;
 
+  std::istream& operator>>(std::istream& in,TextNS::Sentence& x);
+  std::ostream& operator<<(std::ostream& out,const TextNS::Sentence& x);
+
+  std::ostream& operator<<(std::ostream& out,const TextNS::VectorText& x);
+  std::istream& operator>>(std::istream& in,TextNS::VectorText& x);
+
+  std::ostream& operator<<(std::ostream& out,const TextNS::DequeText& x);
+  std::istream& operator>>(std::istream& in,TextNS::DequeText& x);
 
   inline char mytolower(const char& c) {
     return std::tolower(c);}
@@ -95,29 +103,23 @@ namespace TextNS {
 
   template<class T>
     void write(std::string& fn,const T& x) {
-    if(fn==std::string("stdout")) write(std::cout,x);
-    else {Ofile out(fn);write(out,x);}
+    if (fn == std::string("stdout")) 
+      write(std::cout,x);
+    else {
+      Ofile out(fn);
+      write(out,x);
+    }
   }
 
   template<class T>
-    void write(std::ostream& out,const T& x) {
-    for(typename T::const_iterator i=x.begin();i!=x.end();++i) {
-      out<<*i<<"\n";
+  void write(std::ostream& out,const T& x) {
+    for(typename T::const_iterator i = x.begin(); i != x.end(); ++i) {
+      out << *i << "\n";
     }
     out<<std::flush;
   }
   
 };
-
-
-std::istream& operator>>(std::istream& in,TextNS::Sentence& x);
-std::ostream& operator<<(std::ostream& out,const TextNS::Sentence& x);
-
-std::ostream& operator<<(std::ostream& out,const TextNS::VectorText& x);
-std::istream& operator>>(std::istream& in,TextNS::VectorText& x);
-
-std::ostream& operator<<(std::ostream& out,const TextNS::DequeText& x);
-std::istream& operator>>(std::istream& in,TextNS::DequeText& x);
 
 inline TextNS::Sentence& operator+=(TextNS::Sentence& a,const TextNS::Sentence& b) {
   a.reserve(a.size()+b.size());

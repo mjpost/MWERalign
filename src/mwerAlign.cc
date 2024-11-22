@@ -7,6 +7,9 @@
 #include <fstream>
 #include <sstream>
 
+std::istream& operator>>(std::istream& in,Text& x);
+
+
 void MwerSegmenter::mwerAlign(const std::string& ref, const std::string& hyp, std::string& result)
 {
   std::istringstream strRef(ref), strHyp(hyp);
