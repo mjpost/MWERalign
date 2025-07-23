@@ -29,6 +29,8 @@ ext_modules = [
         [
             "src/mwerAlign.cc",
             "src/SimpleText2.cc",  # Add other necessary C++ files
+            "src/IOfile.cc",
+            "src/gzstream.cc",
             "bindings/bindings.cpp",  # New bindings file
         ],
         include_dirs=[

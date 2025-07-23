@@ -14,7 +14,16 @@ namespaces = true
 
 [tool.cibuildwheel]
 build = "cp310-* cp311-* cp312-* cp313-*"
-skip = "*-win32 *-manylinux_i686 pp*"
+# Skip problematic platforms
+skip = [
+    "*-win32",           # Skip 32-bit Windows
+    "*-manylinux_i686",  # Skip 32-bit Linux
+    "pp*",               # Skip PyPy (C++ compatibility issues)
+]
+
+# Ensure we get manylinux2014 wheels (widely compatible)
+manylinux-x86_64-image = "manylinux2014"
+manylinux-aarch64-image = "manylinux2014"
 
 [tool.cibuildwheel.linux]
 before-all = "yum install -y cmake3 || apt-get update && apt-get install -y cmake"
