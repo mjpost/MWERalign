@@ -1,9 +1,53 @@
-# MWERalign
+# mweralign
 
-## What's new
+mweralign is a Python package for aligning a stream of words to a reference segmentation.
+It is designed for use in speech translation tasks, where system outputs must be aligned to
+a reference translation in order for standard MT metrics to work. This package is a Python
+wrapper around the original MWERAlign C++ library, which implements the AS-WER algorithm for 
+automatic sentence segmentation and alignment. The wrapper also includes a modernization of that
+code and support for modern subword tokenization, which helps with alignment.
 
-- Modernized usage
-- Simplified codebase
+## Installation
+
+To install the package, you can use pip:
+
+    pip install mweralign
+
+Or install from source:
+
+    git clone https://github.com/mjpost/mweralign
+    cd mweralign
+    pip install .
+
+## Usage
+
+You can see usage information by running mweralign with the `--help` flag:
+
+    mweralign --help
+
+The standard use case is to provide a reference file, in which segments (sentences) are
+listed one per line, and a hypothesis file, which contains the output of a speech translation system,
+and has no line requirements. The output will be a file with the same number of lines as the hypothesis,
+where each line contains the index of the segment in the reference that corresponds to that hypothesis
+line.
+
+    mweralign -r ref.txt -h hyp.txt -o aligned.txt
+
+You will want to use a tokenizer. Currently supported is "cj", which segments Han characters with whitespace,
+or any SentencePiece model, which are provided in the form of a filesystem path:
+
+    mweralign -r ref.zh.txt -h hyp.txt -o aligned.txt -t cj
+
+    # download the flores200 SPM model (one time)
+    sacrebleu -t wmt24 -l en-zh --echo src | sacrebleu -t wmt24 -l en-zh --tok flores200 > /dev/null
+    # align
+    mweralign -r ref.txt -h hyp.txt -o aligned.txt -t ~/.sacrebleu/models/flores200sacrebleuspm
+
+You may also wish to supply the ISO 639-1 language code (-l zh). For zh and ja, this tells the underlying
+AS-WER algorithm not to prevent sentences from starting with the SentencePiece space character. For other
+languages, it has no effect.
+
+    mweralign -r ref.txt -h hyp.txt -o aligned.txt -t cj -l zh
 
 ## Citation
 
