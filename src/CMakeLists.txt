@@ -1,15 +1,18 @@
 PROJECT(mwerAlign)
 
-set(mwerAlign_LIB_SRCS
-    Evaluator.cc  
-    Evaluator_unsegmentedWER.cc  
-    IOfile.cc  
-    mwerAlign.cc  
-    SimpleText2.cc
-    gzstream.cc
+include_directories(BEFORE ${CMAKE_SOURCE_DIR}/src)
+
+SET(mwerAlign_BIN_SRCS
+   ${CMAKE_SOURCE_DIR}/src/main.cc
+   ${CMAKE_SOURCE_DIR}/src/SimpleText2.cc
+   ${CMAKE_SOURCE_DIR}/src/Evaluator.cc
+   ${CMAKE_SOURCE_DIR}/src/gzstream.cc
+   ${CMAKE_SOURCE_DIR}/src/IOfile.cc
+   ${CMAKE_SOURCE_DIR}/src/mwerAlign.cc
 )
 
-add_library(mwerAlignLib STATIC ${mwerAlign_LIB_SRCS})
-install(TARGETS mwerAlignLib DESTINATION lib)
-install(FILES Evaluator.hh Evaluator_unsegmentedWER.hh IOfile.hh mwerAlign.cc SimpleText2.hh gzstream.hh DESTINATION include)
+add_executable(mwerAlign ${mwerAlign_BIN_SRCS})
+target_link_libraries(mwerAlign z mwerAlignLib)
+
+install(TARGETS mwerAlign DESTINATION bin)
 

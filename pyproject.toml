@@ -1,0 +1,50 @@
+[build-system]
+requires = [
+    "setuptools>=45",
+    "wheel",
+    "pybind11>=2.6",
+    "cmake>=3.15"
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["mweralign*"]
+namespaces = true
+
+[tool.cibuildwheel]
+build = "cp310-* cp311-* cp312-* cp313-*"
+skip = "*-win32 *-manylinux_i686 pp*"
+
+[tool.cibuildwheel.linux]
+before-all = "yum install -y cmake3 || apt-get update && apt-get install -y cmake"
+
+[tool.cibuildwheel.macos]
+before-all = "brew install cmake || true"
+
+[tool.cibuildwheel.windows]
+before-all = "choco install cmake || true"
+
+[project]
+name = "mweralign"
+version = "0.1.0"
+description = "Minimum Word Error Rate Alignment for speech recognition evaluation"
+authors = [{name = "Matt Post", email = "mattpost@microsoft.com"}]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: C++",
+]
+dependencies = [
+    "sentencepiece",
+]
+
+[project.optional-dependencies]
+dev = ["pytest", "black", "flake8"]
+
+[project.scripts]
+mweralign = "mweralign.mweralign:main"
